@@ -33,23 +33,42 @@ void spaceMode() {
   tint(255);
   image(starField, 0, 0, width, height);
 
-  float camA = map(mouseX, 0, width, -180, 180);
-  float camT = map(mouseY, 0, height, -89, 89);
-  camX = 2000*cos(radians(camA))*sin(radians(camT));
-  camY = -2000*cos(radians(camT));
-  camZ = 2000*sin(radians(camA))*sin(radians(camT));
+  pushMatrix();
+  pushStyle();
+  float camA = handRight.x;
+  float camT = handRight.y;
+  float camDis = handRight.z;
+  // println(frameCount);
+
+  camX = camDis*sin(radians(camA))*cos(radians(camT));
+  camY = camDis*sin(radians(camT));
+  camZ = camDis*cos(radians(camA))*cos(radians(camT));
   // camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
   camera(0, -150, 2000, 0, 0, 0, 0, 1, 0);
 
 
+  pushMatrix();
+  soundwaveSphere();
+  popMatrix();
+
   blendMode(ADD);
-  soundCheck();
-  drawTerrain();    
+  drawTerrain();   
+
   blendMode(BLEND);
   lights();
-  translate(100*sin(radians(frameCount/3)), -50+50*sin(radians(frameCount)));
+  PVector temp = new PVector();
+  temp.x = handRight.x*10;
+  temp.y = handRight.y*10-50+50*sin(radians(frameCount));
+  temp.z = handRight.z/100;
+
+
+  spaceshipPos.add((PVector.sub(temp, spaceshipPos)).mult(0.1));
+
+  translate(spaceshipPos.x, spaceshipPos.y, spaceshipPos.z);
   scale(50);
   shape(spaceShip);
+  popMatrix();
+  popStyle();
 }
 
 void soundwaveSphere() {
@@ -64,13 +83,14 @@ void soundwaveSphere() {
   float camA = handRight.x;
   float camT = handRight.y;
   float camDis = handRight.z;
-  println(frameCount);
+  // println(frameCount);
 
   camX = camDis*sin(radians(camA))*cos(radians(camT));
   camY = camDis*sin(radians(camT));
   camZ = camDis*cos(radians(camA))*cos(radians(camT));
-  camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
+  camera(camX, camY, camZ+500, 0, 0, 0, 0, 1, 0);
 
+  translate(0, -500);
   //translate(random(-15, 15), random(-15, 15)-100);
 
   int total = 100;
@@ -81,7 +101,7 @@ void soundwaveSphere() {
       float lon = map(j, 0, total-1, -PI, PI);
 
       int imnd = i+j*total;
-      float r = 200 + in.mix.get(imnd%1024)*audioAmpScale;
+      float r = 200 + in.mix.get(imnd%1024)*audioAmpScale*3;
 
       float x = r*cos(lat)*cos(lon);
       float y = r*sin(lat)*cos(lon);
@@ -93,18 +113,15 @@ void soundwaveSphere() {
 
   for (int i=0; i<total-1; i++) {
     beginShape(TRIANGLE_STRIP);
-    stroke(255, in.mix.get(i)*audioAmpScale/2);
+    //stroke(255, in.mix.get(i)*audioAmpScale/2);
+    colorMode(HSB, 255);
+    stroke(map(totalAmp ,0, 4000, 0, 255), totalAmp/20, totalAmp/20,30);
+
     noFill();  
     for (int j=0; j<total-1; j++) {
       vertex(pp[i][j].x, pp[i][j].y, pp[i][j].z);
       vertex(pp[i+1][j].x, pp[i+1][j].y, pp[i+1][j].z);
     }
     endShape();
-  }
-
-
-
-  if (beat.isOnset()) {
-    background(255);
   }
 }

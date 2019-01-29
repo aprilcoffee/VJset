@@ -11,6 +11,7 @@ BeatListener bl;
 FFT fftLin;
 
 float camX, camY, camZ;
+PVector spaceshipPos;
 
 float height23;
 float spectrumScale = 10;
@@ -66,7 +67,8 @@ void setup()
 
 
   spaceBG = loadImage("spaceBG.png");
-  //spaceShip = loadShape("obj/ship_striker.obj");
+  spaceShip = loadShape("obj/ship_striker.obj");
+  spaceshipPos = new PVector();
 
 
 
@@ -89,21 +91,29 @@ void setup()
 
   img = loadImage("Pixels.jpg");
   frameRate(30);
+  background(0);
 }
 
 void draw()
 {
+  background(0);
   beat.detect(in.mix);
   analyisBeat.detect(in.mix);
   leapmotionScan();
 
-  background(0);
+  soundCheck();
+
+
+  //runText();
+
+  //background(0);
+  //atanLine();
+
   //camera(0, 0, 1000, 0, 0, 0, 0, 1, 0);
 
-  //  rectMode(CENTER);
+  rectMode(CENTER);
+  spaceMode();
 
-
-  soundwaveSphere();
   //for (int s=0; s<tunnel.size(); s++) {
   //  tunnel.get(s).update();
   //  tunnel.get(s).show();

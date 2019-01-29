@@ -41,15 +41,15 @@ void leapmotionScan() {
     //z = -20 ~ 200;
 
     if (handIsRight) {
-      print("Right Hand : ");
+     // print("Right Hand : ");
       
       //println(handPosition);
       handRight.x = map(constrain(handPosition.x, -200, 1500), -200, 1500, -89, 89);
       handRight.y = map(constrain(handPosition.y, -50, 700), -50, 700, -89, 89);
       handRight.z = map(constrain(handPosition.z, -50, 80), -50, 80, 2000, -2000);
-      println(handPosition);
+      //println(handPosition);
     } else if (handIsLeft) {
-      print("Left Hand : ");
+      //print("Left Hand : ");
       // println(handPosition);
       handLeft = handPosition.copy();
     }
