@@ -41,7 +41,7 @@ PGraphics drawSoundwaveSphere(PGraphics P) {
   for (int i=0; i<total-1; i++) {
     P.beginShape(TRIANGLE_STRIP);
     //stroke(255, in.mix.get(i)*audioAmpScale/2);
-    P.stroke(map(totalAmp, 0, 4000, 0, 255), totalAmp/20, totalAmp/20, 30);
+    P.stroke(f_total*255, f_total*255, f_total*255, 30);
 
     P.noFill();  
     for (int j=0; j<total-1; j++) {

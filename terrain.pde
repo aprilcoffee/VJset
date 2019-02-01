@@ -6,6 +6,10 @@ int cols, rows;
 int scl = 20;
 int w = 1000;
 int h = 2000;
+
+boolean TerrainRandom = false;
+boolean terrainRandomTrigger = false;
+int TerrainMode = 2;
 void terrainInit() {
   cols = w/scl;
   rows = h/scl;
@@ -21,7 +25,7 @@ void terrainInit() {
   }
 }
 PGraphics drawTerrain(PGraphics P) {
-  
+
   P.beginDraw();
   P.background(0);
   P.colorMode(HSB);
@@ -244,4 +248,31 @@ PGraphics drawTerrain(PGraphics P) {
   P.popMatrix();
   P.endDraw();
   return P;
+
+  //for (int s=0; s<tunnel.size(); s++) {
+  //  tunnel.get(s).update();
+  //  tunnel.get(s).show();
+  //  if (tunnel.get(s).z > 1000)tunnel.remove(s);
+  //}
+}
+
+class Tunnel {
+  float x, y, z;
+  float len;
+  Tunnel() {
+    x = 0;
+    y = 0;
+    z = -2000;
+    len = 500;
+  }
+  void update() {
+    z+=30;
+  }
+  void show() {
+    noFill();
+    strokeWeight(5);
+    stroke(255);
+    translate(0, 0, z);
+    rect(0, 0, 500, 1000);
+  }
 }

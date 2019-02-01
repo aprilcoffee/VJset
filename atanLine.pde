@@ -3,10 +3,8 @@ float train = 0;
 PGraphics drawatanWave(PGraphics P) {
 
   P.beginDraw();
-
-
   //println(totalAmp);
-  train += map(totalAmp, 0, 4000, 0, 5);
+  train += map(f_total, 0, 1, 0, 5);
 
   if (beat.isOnset()) {
     train+=random(30, 50);

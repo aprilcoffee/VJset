@@ -1,3 +1,5 @@
+PVector spaceshipPos;
+PShape spaceShip;
 
 PGraphics drawSpaceShip(PGraphics P) {
   P.beginDraw();

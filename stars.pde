@@ -10,8 +10,7 @@ PGraphics drawStarField(PGraphics P) {
   P.imageMode(CENTER);
   P.image(spaceBG, P.width/2, P.height/2, P.width, P.height);
   P.popMatrix();
-
-  for (int s=0; s<5; s++) {
+  for (int s=0; s<f_total * 5; s++) {
     stars.add(new Star(10, 100));
   }
   P.translate(starWidth/2, starHeight/2);
@@ -28,12 +27,9 @@ PGraphics drawStarField(PGraphics P) {
 }
 class Star {
   PVector pos = new PVector();
-
   float pz;
   float speed;
-
   float R, theta, v, proportion, proportionV;
-
   float ssx, ssy;
   Star(int eSpeed, float _proportionV) {
     pos.x = random(-starWidth/4, starWidth/4);

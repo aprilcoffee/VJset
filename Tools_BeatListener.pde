@@ -1,3 +1,6 @@
+float kickSize, snareSize, hatSize;
+float beatLighten = 0;
+float audioAmpScale = 1000;
 void soundDetectionInit() {
   minim = new Minim(this);
   in = minim.getLineIn();
@@ -14,60 +17,84 @@ void soundDetectionInit() {
 
 void detectBeat() {
 
+  isKick = false;
+  isBeat = false;
+  isSnare = false;
+  isHat = false;
+  
   // draw a green rectangle for every detect band
   // that had an onset this frame
   float rectW = width / analyisBeat.detectSize();
-
-
   for (int i = 0; i < analyisBeat.detectSize(); ++i)
   {
     // test one frequency band for an onset
+    /*
     if ( analyisBeat.isOnset(i) )
-    {
-      fill(0, 200, 0);
-      //rect( i*rectW, 0, rectW, height);
-      for (int x=0; x<rectW; x++) {
-        for (int y=0; y<height; y++) {
-          color c = (color)img.get((int)map(i*rectW+x, 0, width, 0, img.width), (int)map(y, 0, height, 0, img.height));
-          set(int(i*rectW+x), y, c);
-        }
-      }
-    }
-  }
+     {
+     fill(0, 200, 0);
+     //rect( i*rectW, 0, rectW, height);
+     for (int x=0; x<rectW; x++) {
+     for (int y=0; y<height; y++) {
+     color c = (color)glitchImg.get((int)map(i*rectW+x, 0, width, 0, glitchImg.width), (int)map(y, 0, height, 0, glitchImg.height));
+     set(int(i*rectW+x), y, c);
+     }
+     }
+     }
+     }*/
 
-  // draw an orange rectangle over the bands in 
-  // the range we are querying
-  int lowBand = 5;
-  int highBand = 15;
-  // at least this many bands must have an onset 
-  // for isRange to return true
-  int numberOfOnsetsThreshold = 4;
-  if ( analyisBeat.isRange(lowBand, highBand, numberOfOnsetsThreshold) )
-  {
-    fill(232, 179, 2, 200);
-    rect(rectW*lowBand, 0, (highBand-lowBand)*rectW, height);
+    // draw an orange rectangle over the bands in 
+    // the range we are querying
+    int lowBand = 5;
+    int highBand = 15;
+    // at least this many bands must have an onset 
+    // for isRange to return true
+    int numberOfOnsetsThreshold = 4;
+    /* if ( analyisBeat.isRange(lowBand, highBand, numberOfOnsetsThreshold) )
+     {
+     fill(232, 179, 2, 200);
+     rect(rectW*lowBand, 0, (highBand-lowBand)*rectW, height);
+     }
+     
+     if ( analyisBeat.isKick() ) {
+     kickSize = 32;
+     }
+     if ( analyisBeat.isSnare() ) {
+     snareSize = 32;
+     }
+     if ( analyisBeat.isHat() ) {
+     hatSize = 32;
+     }
+     
+     
+     fill(255);
+     
+     textSize(kickSize);
+     text("KICK", width/4, height/2);
+     
+     textSize(snareSize);
+     text("SNARE", width/2, height/2);
+     
+     textSize(hatSize);
+     text("HAT", 3*width/4, height/2);
+     
+     */
   }
-
   if ( analyisBeat.isKick() ) {
-    kickSize = 32;
+    println("kick");
+    isKick = true;
   }
   if ( analyisBeat.isSnare() ) {
-    snareSize = 32;
+    println("Snare");
+    isSnare = true;
   }
   if ( analyisBeat.isHat() ) {
-    hatSize = 32;
+    println("Hat");
+    isHat = true;
   }
-
-  fill(255);
-
-  textSize(kickSize);
-  text("KICK", width/4, height/2);
-
-  textSize(snareSize);
-  text("SNARE", width/2, height/2);
-
-  textSize(hatSize);
-  text("HAT", 3*width/4, height/2);
+  if (beat.isOnset()) {
+    println("Beat");
+    isBeat = true;
+  }
 
   kickSize = constrain(kickSize * 0.95, 16, 32);
   snareSize = constrain(snareSize * 0.95, 16, 32);
