@@ -46,23 +46,23 @@ void planetInit(PGraphics P) {
   }
   geometry = new Geometry[total+1][total+1];
   geometryInit();
-  P.beginDraw();
-  P.endDraw();
+  //P.beginDraw();
+  //P.endDraw();
 }
 void beatCheck() {
   showHalf = isBeat;
   showHalfTrigger = isBeat;
 
   crashSide = isKick;
+  
   changeTexture = isHat;
-
   textureOn = isSnare;
 }
 PGraphics drawPlanet(PGraphics P) {
 
 
-  imageMode(CENTER);
-  hint(DISABLE_DEPTH_TEST);
+  //imageMode(CENTER);
+  //hint(DISABLE_DEPTH_TEST);
 
   beatCheck();
 
@@ -70,8 +70,8 @@ PGraphics drawPlanet(PGraphics P) {
   pushStyle();
 
   P.beginDraw();
-  P.background(0,0);
-
+  P.background(0, 0);
+  P.endDraw();
   phase3moveA=89*sin(radians(frameCount*2.173));
   phase3moveT=89*sin(radians(frameCount*0.489));
   float camR = 1500;
@@ -236,7 +236,7 @@ PGraphics drawPlanet(PGraphics P) {
   //image(orbitTexture,width/2,height/2,width,height);
 
 
-  P.endDraw();
+  //iP.endDraw();
 
   popMatrix();
   popStyle();

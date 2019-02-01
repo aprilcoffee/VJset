@@ -27,7 +27,7 @@ void terrainInit() {
 PGraphics drawTerrain(PGraphics P) {
 
   P.beginDraw();
-  P.background(0);
+  P.background(0,0);
   P.colorMode(HSB);
   P.hint(DISABLE_DEPTH_TEST);
   P.camera(0, -150, 2000, 0, 0, 0, 0, 1, 0);
@@ -42,11 +42,11 @@ PGraphics drawTerrain(PGraphics P) {
   audioAmp[0] = 0;
   for (int x = 0; x < cols; x++) {
     if (x%2==0) {
-      terrainLeft[x][0] = fftLin.getBand(x*2)/2*40+in.left.get(x*2)*40;
-      terrainRight[x][0]= fftLin.getBand(x*2)/2*40+in.right.get(x*2)*40;
+      terrainLeft[x][0] = fftLin.getBand(x*2)/2*40+in.left.get(x*2)*20;
+      terrainRight[x][0]= fftLin.getBand(x*2)/2*40+in.right.get(x*2)*20;
     } else {
-      terrainLeft[x][0] = -fftLin.getBand(x*2)/2*40+in.left.get(x*2)*40;
-      terrainRight[x][0]= -fftLin.getBand(x*2)/2*40+in.right.get(x*2)*40;
+      terrainLeft[x][0] = -fftLin.getBand(x*2)/2*40+in.left.get(x*2)*20;
+      terrainRight[x][0]= -fftLin.getBand(x*2)/2*40+in.right.get(x*2)*20;
     }
     audioAmp[0]+=abs(fftLin.getBand(x*5))*15;//renew Amount of Sound
   }

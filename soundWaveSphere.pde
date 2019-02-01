@@ -17,15 +17,14 @@ PGraphics drawSoundwaveSphere(PGraphics P) {
   camZ = camDis*cos(radians(camA))*cos(radians(camT));
   P.camera(camX, camY, camZ+500, 0, 0, 0, 0, 1, 0);
 
-  P.translate(0, -200);
   //translate(random(-15, 15), random(-15, 15)-100);
 
-  int total = 100;
-  PVector[][] pp = new PVector[total][total];
-  for (int i = 0; i<total; i++) {
-    float lat = map(i, 0, total-1, 0, PI);
-    for (int j=0; j<total; j++) {
-      float lon = map(j, 0, total-1, -PI, PI);
+  int totalSize = 80;
+  PVector[][] pp = new PVector[totalSize][totalSize];
+  for (int i = 0; i<totalSize; i++) {
+    float lat = map(i, 0, totalSize-1, 0, PI);
+    for (int j=0; j<totalSize; j++) {
+      float lon = map(j, 0, totalSize-1, -PI, PI);
 
       int imnd = i+j*total;
       float r = 200 + in.mix.get(imnd%1024)*audioAmpScale*3;
@@ -38,13 +37,13 @@ PGraphics drawSoundwaveSphere(PGraphics P) {
     }
   }
 
-  for (int i=0; i<total-1; i++) {
+  for (int i=0; i<totalSize-1; i++) {
     P.beginShape(TRIANGLE_STRIP);
     //stroke(255, in.mix.get(i)*audioAmpScale/2);
-    P.stroke(f_total*255, f_total*255, f_total*255, 30);
+    P.stroke(f_total*255, f_total*255, f_total*255, 20);
 
     P.noFill();  
-    for (int j=0; j<total-1; j++) {
+    for (int j=0; j<totalSize-1; j++) {
       P.vertex(pp[i][j].x, pp[i][j].y, pp[i][j].z);
       P.vertex(pp[i+1][j].x, pp[i+1][j].y, pp[i+1][j].z);
     }

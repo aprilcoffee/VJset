@@ -132,5 +132,21 @@ void soundCheck() {
   f_High = norm(freqHigh, freqHigh_Min, freqHigh_Max);
   f_total = norm(freqTotal, totalAmp_Min, totalAmp_Max);
 
+  int showVol = int(map(f_total, 0, 1, 0, 9));
+
+  int channel = 12;
+  for (int i=0; i<showVol; i++) {
+
+    int number = 11+i;
+    int value = 13;
+    myBus.sendControllerChange(channel, number, value); // Send a controllerChange
+  }
+  for (int i =showVol; i<8; i++) {
+    int number = 11+i;
+    int value = 0;
+    myBus.sendControllerChange(channel, number, value); // Send a controllerChange
+  }
+
+
   //println(totalAmp);
 }

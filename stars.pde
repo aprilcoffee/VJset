@@ -1,14 +1,13 @@
 ArrayList<Star> stars = new ArrayList<Star>();
 int starWidth = 800;
 int starHeight = 450;
-
 PGraphics drawStarField(PGraphics P) {
   P.beginDraw();
   P.background(0, 0);
   P.pushMatrix();
-  P.tint(100);
-  P.imageMode(CENTER);
-  P.image(spaceBG, P.width/2, P.height/2, P.width, P.height);
+  //P.tint(100);
+  //P.imageMode(CENTER);
+  //P.image(spaceBG, P.width/2, P.height/2, P.width, P.height);
   P.popMatrix();
   for (int s=0; s<f_total * 5; s++) {
     stars.add(new Star(10, 100));

@@ -50,13 +50,14 @@ PGraphics PG_planet;
 
 void setup()
 {
-  size(1280, 800, P3D);
+  //size(1280, 800, P3D);
+  fullScreen(P3D,2);
   blendMode(ADD);
   hint(DISABLE_DEPTH_TEST);
   colorMode(HSB);
 
   spaceBG = loadImage("spaceBG.png");
-  spaceShip = loadShape("obj/ship_striker.obj");
+  spaceShip = loadShape("obj/penis.obj");
   glitchImg = loadImage("Pixels.jpg");
   spaceshipPos = new PVector();
   spaceImg = new PImage[photoLength];
@@ -114,45 +115,57 @@ void draw()
   camY = camDis*sin(radians(camT));
   camZ = camDis*cos(radians(camA))*cos(radians(camT));
 
+  //camera(width/2.0, height/2.0, (height/2.0) / tan(PI*30.0 / 180.0), width/2.0, height/2.0, 0, 0, 1, 0);
+  //imageMode(CORNER);
+  //hint(DISABLE_DEPTH_TEST);
 
-  hint(DISABLE_DEPTH_TEST);
+  //blendMode(ADD);
+
   ////PG_starField
   if (midi.layerToggle[0]) {
     tint(midi.layerTint[0]);
+    blendMode(ADD);
     image(drawStarField(PG_starField), 0, 0, width, height);
   }
   ////PG_terrain
   if (midi.layerToggle[1]) {
     tint(midi.layerTint[1]);
+    blendMode(ADD);
     image(drawTerrain(PG_terrain), 0, 0, width, height);
   }
   ////PG_atanWave
   if (midi.layerToggle[2]) {
     tint(midi.layerTint[2]);
+    blendMode(ADD);
     image(drawatanWave(PG_atanWave), 0, 0, width, height);
   }
   ////PG_soundwaveSphere
   if (midi.layerToggle[3]) {
     tint(midi.layerTint[3]);
+    blendMode(ADD);
     image(drawSoundwaveSphere(PG_soundwaveSphere), 0, 0, width, height);
-  }
-  ////PG_spaceShip
-  if (midi.layerToggle[4]) {
-    tint(midi.layerTint[4]);
-    image(drawSpaceShip(PG_spaceShip), 0, 0, width, height);
   }
   //PG_floatingText
   if (midi.layerToggle[5]) {
     tint(midi.layerTint[5]);
+    blendMode(ADD);
     image(drawFloatingText(PG_floatingText), 0, 0, width, height);
   }
   //PG_particleFollow
   if (midi.layerToggle[6]) {
     tint(midi.layerTint[6]);
+    blendMode(ADD);
     image(drawParticleFollow(PG_particleFollow), 0, 0, width, height);
+  }
+  ////PG_spaceShip
+  if (midi.layerToggle[4]) {
+    tint(midi.layerTint[4]);
+    blendMode(BLEND);
+    image(drawSpaceShip(PG_spaceShip), 0, 0, width, height);
   }
   if (midi.layerToggle[7]) {
     tint(midi.layerTint[7]);
+    blendMode(ADD);
     image(drawPlanet(PG_planet), 0, 0, width, height);
   }
 }

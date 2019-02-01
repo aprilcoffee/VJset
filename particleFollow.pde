@@ -29,7 +29,6 @@ PGraphics drawParticleFollow(PGraphics P) {
   camZ = camDis*cos(radians(camA))*cos(radians(camT));
   P.camera(camX, camY, camZ+500, 0, 0, 0, 0, 1, 0);
 
-
   float movementScale = spectrumScale ;
   for (int i=0; i<attractorsSize; i++) {
     P.stroke(255);
@@ -39,8 +38,13 @@ PGraphics drawParticleFollow(PGraphics P) {
   attractors[0].x = fftLin.getAvg(0)*movementScale*10;
    attractors[0].y = fftLin.getAvg(3)*movementScale*2;
    */
-  attractors[0].x = mouseX;
-  attractors[0].y = mouseY;
+
+
+  //handRight.x = map(constrain(handPosition.x, -200, 1500), -200, 1500, -89, 89);
+ // handRight.y = map(constrain(handPosition.y, -50, 700), -50, 700, -89, 89);
+ // handRight.z = map(constrain(handPosition.z, -50, 80), -50, 80, 2000, -2000);
+  attractors[0].x = handRight.x*10;
+  attractors[0].y = handRight.y*6;
   attractors[1].x = -1*fftLin.getAvg(0)*movementScale*10;
   attractors[1].y = -1*fftLin.getAvg(3)*movementScale*2;
   attractors[0].z = fftLin.getAvg(13)*movementScale*2;
