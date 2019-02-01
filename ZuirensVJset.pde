@@ -27,33 +27,29 @@ boolean TerrainRandom = false;
 boolean terrainRandomTrigger = false;
 int TerrainMode = 2;
 
-//Terrain
-float[][] terrainLeft;
-float[][] terrainRight;
-float[] audioAmp;
-int cols, rows;
-int scl = 20;
-int w = 1000;
-int h = 2000;
 
-
-
-PGraphics starField;
-ArrayList<Star> stars = new ArrayList<Star>();
-
-int starWidth = 800;
-int starHeight = 450;
+float camA;
+float camT; 
+float camDis; 
 
 PShape spaceShip;
 
-PGraphics controlinterface;
-
 float beatLighten = 0;
-
-
 float audioAmpScale = 1000;
+//ArrayList<Tunnel> tunnel;
 
-ArrayList<Tunnel> tunnel;
+PGraphics PG_starField;
+PGraphics PG_terrain;
+PGraphics PG_planet;
+PGraphics PG_atanWave;
+PGraphics PG_soundwaveSphere;
+PGraphics PG_spaceShip;
+PGraphics PG_floatingText;
+PGraphics PG_particleFollow;
+
+//PGraphics controlinterface;
+
+
 void setup()
 {
   size(1280, 800, P3D);
@@ -69,13 +65,16 @@ void setup()
   spaceBG = loadImage("spaceBG.png");
   spaceShip = loadShape("obj/ship_striker.obj");
   spaceshipPos = new PVector();
+  //controlinterface = createGraphics(800, 600, P3D);
 
-
-
-  starField = createGraphics(800, 450, P3D);
-  controlinterface = createGraphics(800, 600, P3D);
-
-
+  PG_starField = createGraphics(800, 450, P3D);
+  PG_terrain = createGraphics(1280, 800, P3D);
+  PG_atanWave = createGraphics(1280, 800, P3D);
+  PG_soundwaveSphere = createGraphics(1280, 800, P3D);
+  PG_spaceShip = createGraphics(800, 600, P3D);
+  PG_floatingText = createGraphics(1280, 800, P3D);
+  PG_particleFollow = createGraphics(1280, 800, P3D);
+  PG_planet = createGraphics(1280, 800, P3D);
 
   // make a new beat listener, so that we won't miss any buffers for the analysis
   //bl = new BeatListener(analyisBeat, in);  
@@ -86,8 +85,7 @@ void setup()
   textFont(font_trench);
   textAlign(CENTER);
 
-  tunnel = new ArrayList<Tunnel>();
-
+  //tunnel = new ArrayList<Tunnel>();
 
   img = loadImage("Pixels.jpg");
   frameRate(30);
@@ -100,19 +98,51 @@ void draw()
   beat.detect(in.mix);
   analyisBeat.detect(in.mix);
   leapmotionScan();
-
   soundCheck();
 
+  camA = handRight.x;
+  camT = handRight.y;
+  camDis = handRight.z;
 
-  //runText();
+  // println(frameCount);
+  camX = camDis*sin(radians(camA))*cos(radians(camT));
+  camY = camDis*sin(radians(camT));
+  camZ = camDis*cos(radians(camA))*cos(radians(camT));
 
-  //background(0);
-  //atanLine();
+  ////PG_starField
+  hint(DISABLE_DEPTH_TEST);
+  tint(255);
+  //image(drawStarField(PG_starField), 0, 0, width, height);
 
-  //camera(0, 0, 1000, 0, 0, 0, 0, 1, 0);
+  ////PG_terrain
+  tint(255);
+  //image(drawTerrain(PG_terrain), 0, 0, width, height);
 
-  rectMode(CENTER);
-  spaceMode();
+  ////PG_atanWave
+  tint(255);
+  //image(drawatanWave(PG_atanWave), 0, 0, width, height);
+
+  ////PG_soundwaveSphere
+  tint(255);
+  //image(drawSoundwaveSphere(PG_soundwaveSphere), 0, 0, width, height);
+
+  ////PG_spaceShip
+  tint(255);
+  //image(drawSpaceShip(PG_spaceShip), 0, 0, width, height);
+
+  ////PG_spaceShip
+  tint(255);
+  //image(drawSpaceShip(PG_spaceShip), 0, 0, width, height);
+
+  //PG_floatingText
+  tint(255);
+  //image(drawFloatingText(PG_floatingText), 0, 0, width, height);
+
+  //PG_particleFollow
+  tint(255);
+  image(drawParticleFollow(PG_particleFollow), 0, 0, width, height);
+
+
 
   //for (int s=0; s<tunnel.size(); s++) {
   //  tunnel.get(s).update();

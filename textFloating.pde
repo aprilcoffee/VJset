@@ -1,26 +1,20 @@
 ArrayList<Text> texts = new ArrayList<Text>();
-void runText() {
-
-
-
-
-  float camA = handRight.x;
-  float camT = handRight.y;
-  float camDis = handRight.z;
-  // println(frameCount);
+PGraphics drawFloatingText(PGraphics P) {
+  P.beginDraw();
+  P.blendMode(ADD);
+  P.hint(DISABLE_DEPTH_TEST);
 
   camX = camDis*sin(radians(camA))*cos(radians(camT));
   camY = camDis*sin(radians(camT));
   camZ = camDis*cos(radians(camA))*cos(radians(camT));
-  camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
+  P.camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
   if (totalAmp<1000) {
-    background(0);
+    P.background(0,0);
   } else {
     if (random(map(totalAmp, 1000, 4000, 0, 100)) > 30);
-    else background(0);
+    else P.background(0,0);
   }
-
-  float addTextNum = constrain(map(totalAmp, 0, 4000, -10, 20), 0, 20);
+  float addTextNum = constrain(map(totalAmp, 0, 4000, -10, 20), 10, 20);
 
   boolean isBeat = false;
 
@@ -29,14 +23,17 @@ void runText() {
     isBeat = true;
   }
   for (int i = 0; i < addTextNum; i++) {
-    texts.add(new Text());
+    texts.add(new Text(P));
   }
 
   for (int s=0; s<texts.size(); s++) {
-    texts.get(s).update(isBeat);
-    texts.get(s).show();
+    texts.get(s).update(isBeat,P);
+    texts.get(s).show(P);
     if (texts.get(s).pos.y < -500)texts.remove(s);
   }
+
+  P.endDraw();
+  return P;
 }
 class Text {
   PVector pos;
@@ -44,8 +41,8 @@ class Text {
   PVector v;
   float textsize;
   char text;
-  Text() {
-    pos = new PVector(random(-width/2, width/2), height*1.5, random(-500, 500));
+  Text(PGraphics P) {
+    pos = new PVector(random(-P.width, P.width), P.height*1.5, random(-500, 500));
     ppos = pos.copy();
     text = char(int(random(0, 128)));
     v = new PVector(0, random(-5, -10), 0);
@@ -56,25 +53,23 @@ class Text {
     text = char(int(random(0, 128)));
     v = new PVector(0, random(-5, -10), 0);
   }
-  void update(boolean _isBeat) {
+  void update(boolean _isBeat,PGraphics P) {
     if (_isBeat) {
-      ppos = new PVector(random(-width/2, width/2), pos.y, random(-500, 500));
+      ppos = new PVector(random(-P.width, P.width), pos.y, random(-500, 500));
     }
     ppos.add(v);
 
-    pos.add((PVector.sub(ppos, pos)).mult(0.1));
+    pos.add((PVector.sub(ppos, pos)).mult(0.05));
   }
   void update() {
-
     ppos.add(v);
-
-    pos.add((PVector.sub(ppos, pos)).mult(0.1));
+    pos.add((PVector.sub(ppos, pos)).mult(0.05));
   }
-  void show() {
-    pushMatrix();
-    fill(255);
-    translate(pos.x, pos.y, pos.z);
-    text(text, 0, 0);
-    popMatrix();
+  void show(PGraphics P) {
+    P.pushMatrix();
+    P.fill(255);
+    P.translate(pos.x, pos.y, pos.z);
+    P.text(text, 0, 0);
+    P.popMatrix();
   }
 }

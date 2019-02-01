@@ -1,3 +1,31 @@
+ArrayList<Star> stars = new ArrayList<Star>();
+int starWidth = 800;
+int starHeight = 450;
+
+PGraphics drawStarField(PGraphics P) {
+  P.beginDraw();
+  P.background(0, 0);
+  P.pushMatrix();
+  P.tint(100);
+  P.imageMode(CENTER);
+  P.image(spaceBG, P.width/2, P.height/2, P.width, P.height);
+  P.popMatrix();
+
+  for (int s=0; s<5; s++) {
+    stars.add(new Star(10, 100));
+  }
+  P.translate(starWidth/2, starHeight/2);
+  for (int s=0; s<stars.size(); s++) {
+    stars.get(s).update();
+    if (stars.get(s).pos.z < 1) {
+      stars.remove(s);
+      continue;
+    }
+    stars.get(s).show(P);
+  }
+  P.endDraw();
+  return P;
+}
 class Star {
   PVector pos = new PVector();
 

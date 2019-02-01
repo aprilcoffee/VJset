@@ -1,3 +1,10 @@
+PGraphics drawParticleFollow(PGraphics P) {
+  P.beginDraw();
+  
+  
+  P.endDraw();
+  return P;
+}
 class Particle {
   PVector pos;
   PVector prevPos;
