@@ -87,7 +87,9 @@ PGraphics drawPlanet(PGraphics P) {
   float camY = camR * sin(radians(phase3moveT));
   float camZ = camR * cos(radians(phase3moveA)*cos(radians(phase3moveT)));
   P.camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
-  if (isBeat)P.translate(random(-60, 60), random(-60, 60));
+  if (isBeat) {
+    P.translate(random(-60, 60), random(-60, 60));
+  }
   orbitTextureDraw(orbitTexture);
   //drawTerrainInGraphics(orbitTexture);
   resetSphereLocation();
@@ -175,7 +177,7 @@ PGraphics drawPlanet(PGraphics P) {
         newLatMinHalf = newLatMaxHalf;
         newLatMaxHalf = temp;
       }
-      println(newLatMinHalf, newLatMaxHalf);
+      //println(newLatMinHalf, newLatMaxHalf);
       showHalfTrigger=false;
     }
   }

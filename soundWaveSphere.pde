@@ -33,7 +33,7 @@ PGraphics drawSoundwaveSphere(PGraphics P) {
 
       int imnd = i+j*total;
       //float r = 300 + in.mix.get(imnd%1024)*audioAmpScale;
-      float r = 300 + in.mix.get(imnd%1024)*audioAmpScale/2;
+      float r = 300 + in.mix.get(imnd%1024)*audioAmpScale*5*norm(midi.control[3][0], 0, 127);
 
       float x = r*cos(lat)*cos(lon);
       float y = r*sin(lat)*cos(lon);
@@ -41,15 +41,15 @@ PGraphics drawSoundwaveSphere(PGraphics P) {
       pp[i][j] = new PVector(x, y, z);
     }
   }
-  
+
   P.rotateZ(360*sin(radians(frameCount*0.39)));
   P.rotateY(360*sin(radians(frameCount*1.73)));
   P.rotateX(360*sin(radians(frameCount*1.2)));
-  
+
   for (int i=0; i<totalSize-1; i++) {
     //stroke(255, in.mix.get(i)*audioAmpScale/2);
     P.beginShape(TRIANGLE_STRIP);
-    P.stroke(f_High*255, f_total*255*norm(midi.control[3][0], 0, 127), f_total*200, 50);
+    P.stroke(f_High*255, f_total*255*norm(midi.control[3][1], 0, 127), f_total*200, 50);
     P.noFill();  
     for (int j=0; j<totalSize-1; j++) {
       P.vertex(pp[i][j].x, pp[i][j].y, pp[i][j].z);
@@ -60,7 +60,7 @@ PGraphics drawSoundwaveSphere(PGraphics P) {
 
   P.blendMode(BLEND);
   P.noStroke();
-  P.fill(0, 255*norm(midi.control[3][1], 0, 127));
+  P.fill(0, 255*norm(midi.control[3][2], 0, 127));
   //P.translate(random( -f_total*100), random(f_total*100));
   P.sphere(150 + 50*sin(radians(frameCount*1.3)));
   P.endDraw();

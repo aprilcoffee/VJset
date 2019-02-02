@@ -13,11 +13,11 @@ PGraphics drawFloatingText(PGraphics P) {
   boolean isBeat = false;
 
   if (beat.isOnset()) {
-    println("Beat");
+    //println("Beat");
     isBeat = true;
   }
   for (int i = 0; i < f_total*20; i++) {
-    texts.add(new Text(P));
+    texts.add(new Text(P, f_High));
   }
 
   for (int s=0; s<texts.size(); s++) {
@@ -35,12 +35,14 @@ class Text {
   PVector v;
   float textsize;
   char text;
-  Text(PGraphics P) {
+  float transparent;
+  Text(PGraphics P, float _transparent) {
     pos = new PVector(random(-P.width, P.width), P.height*1.5, random(-500, 500));
     ppos = pos.copy();
     text = char(int(random(0, 128)));
     v = new PVector(0, random(-5, -10), 0);
     textsize = random(10, 30);
+    transparent = _transparent;
   }
   Text(PVector _pos) {
     pos = _pos.copy();
@@ -62,10 +64,20 @@ class Text {
   }
   void show(PGraphics P) {
     P.pushMatrix();
-    P.fill(255);
+    P.fill(100 + 155* transparent);
     P.textSize(textsize);
     P.translate(pos.x, pos.y, pos.z);
     P.text(text, 0, 0);
+    P.noFill();
+    P.stroke(255);
+    if (midi.control[5][0]>32) {
+      if (random(f_High*100)>70) {
+        if (random(2)>1)
+          P.line(0, 0, 500*f_total*norm(midi.control[5][0], 0, 127), 0);
+        else
+          P.line(0, 0, -500*f_total*norm(midi.control[5][0], 0, 127), 0);
+      }
+    }
     P.popMatrix();
   }
 }

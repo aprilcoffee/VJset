@@ -42,6 +42,7 @@ PGraphics drawSpaceShip(PGraphics P) {
   P.translate(spaceshipPos.x, spaceshipPos.y, abs(spaceshipPos.z));
   P.pushMatrix();
   P.rotateY(-HALF_PI);
+  P.rotateZ(PI);
   P.scale(20+f_High*2);
   P.shape(spaceShip);
   P.popMatrix();
@@ -85,7 +86,7 @@ PGraphics drawSpaceShip(PGraphics P) {
       isDeadShake = true;
     }
     if (tunnel.get(s).z> 1600 && tunnel.get(s).game==0 )tunnel.remove(s);
-    if (tunnel.get(s).z> 900 && tunnel.get(s).game==1 )tunnel.remove(s);
+    else if (tunnel.get(s).z> 900 && tunnel.get(s).game==1 )tunnel.remove(s);
   }
   P.endDraw();
 

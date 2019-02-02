@@ -178,7 +178,7 @@ void leapOnCircleGesture(CircleGesture g, int state) {
   case 2: // Update
     break;
   case 3: // Stop
-    println("CircleGesture: " + id);
+    //println("CircleGesture: " + id);
     break;
   }
 
@@ -202,7 +202,7 @@ void leapOnScreenTapGesture(ScreenTapGesture g) {
   long    duration         = g.getDuration();
   float   durationSeconds  = g.getDurationInSeconds();
 
-  println("ScreenTapGesture: " + id);
+  //println("ScreenTapGesture: " + id);
 }
 
 

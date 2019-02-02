@@ -1,6 +1,6 @@
 import ddf.minim.*;
 import ddf.minim.analysis.*;
-
+Runtime runtime;
 Minim minim;
 AudioInput in;
 BeatDetect analyisBeat;
@@ -49,8 +49,8 @@ PGraphics PG_planet;
  */
 void setup()
 {
-  size(1920, 1080, P3D);
-  //fullScreen(P3D,1);
+  //size(1920, 1080, P3D);
+  fullScreen(P3D,2);
 
   blendMode(ADD);
   hint(DISABLE_DEPTH_TEST);
@@ -78,7 +78,7 @@ void setup()
   PG_spaceShip = createGraphics(1920, 1080, P3D);
   PG_floatingText = createGraphics(1280, 800, P3D);
   PG_particleFollow = createGraphics(1920, 1080, P3D);
-  PG_planet = createGraphics(1920,1080, P3D);
+  PG_planet = createGraphics(1920, 1080, P3D);
   // make a new beat listener, so that we won't miss any buffers for the analysis
   //bl = new BeatListener(analyisBeat, in);  
   font_trench = createFont("font/trench100free.ttf", 32);   
@@ -96,6 +96,9 @@ void setup()
 
   frameRate(30);
   background(0);
+  
+  
+  runtime = java.lang.Runtime.getRuntime();
 }
 
 void draw()
@@ -109,13 +112,13 @@ void draw()
   soundCheck();
   detectBeat();
 
-  if (frameCount%6000==0)soundAdjestReset();
+ // if (frameCount%6000==0)soundAdjestReset();
 
   camA = handRight.x;
   camT = handRight.y;
   camDis = handRight.z;
 
-  // println(frameCount);
+  // frameCount);
   camX = camDis*sin(radians(camA))*cos(radians(camT));
   camY = camDis*sin(radians(camT));
   camZ = camDis*cos(radians(camA))*cos(radians(camT));
@@ -175,12 +178,20 @@ void draw()
     if (midi.control[7][2] > 30) {
       translate(random(-f_total*10, f_total*10), random(-f_total*10, f_total*10));
       tint(midi.layerTint[7] * norm(midi.control[7][2], 0, 127));
-      
+
       pushMatrix();
-      image(PG_planet, -width/2+200, -height/2, width, height);
+      if (midi.control[7][2]>64) {
+        translate(100 * abs(sin(radians(frameCount + 30*f_High))), 0);
+        image(PG_planet, -width/2+200, -height/2, width, height);
+      }
       popMatrix();
-      
-      image(PG_planet, width/2, height/2-200, width, height);
+
+      pushMatrix();
+      if (midi.control[7][2]>64) {
+        translate(-150 * abs(sin(radians(frameCount + 27*f_Mid))), 0);
+        image(PG_planet, width/2, height/2-200, width, height);
+      }
+      popMatrix();
     }
   }
 
@@ -190,4 +201,7 @@ void draw()
     soundAdjestReset();
     soundReset=false;
   }
+  
+  
+  if (frameCount % 3600 ==0)runtime.gc();
 }

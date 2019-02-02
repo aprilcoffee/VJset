@@ -32,7 +32,7 @@ PGraphics drawatanWave(PGraphics P) {
 
 
   P.pushMatrix();
-  P.translate(-midi.control[2][0]*3*(0.8 + f_total/2), 0);
+  P.translate(-midi.control[2][0]*5*(0.8 + f_total/2), 0);
   for (float i=train; i<train+150; i+=0.8) {
     x1 = R*sin(radians(i))*sin(radians(i/0.378));
     y1 = R*cos(radians(i/2))*cos(radians(i/3));
@@ -78,7 +78,7 @@ PGraphics drawatanWave(PGraphics P) {
   }
 
   P.pushMatrix();
-  P.translate(midi.control[2][0]*3 * (0.8 + f_total/2), 0);
+  P.translate(midi.control[2][0]*5 * (0.8 + f_total/2), 0);
   for (float i=train; i<train+180; i+=0.8) {
     x1 = R*sin(radians(i/0.796))*sin(radians(i%2));
     y1 = R*tan(radians(i*1.32))*cos(radians(i/2))*cos(radians(i/3));

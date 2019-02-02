@@ -31,7 +31,16 @@ void starInit() {
 }
 PGraphics drawStarField(PGraphics P) {
   P.beginDraw();
-  P.background(0, 0);
+  if (midi.control[0][0] > 100) {
+    if (f_total<0.4) {
+      P.background(0, 0);
+    } else {
+      if (random(map(f_total, 0.4, 1, 0, 100)) > 30);
+      else P.background(0, 0);
+    }
+  } else {
+    P.background(0, 0);
+  }
   P.blendMode(ADD);
   P.hint(DISABLE_DEPTH_TEST);
   P.pushMatrix();
