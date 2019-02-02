@@ -5,6 +5,9 @@ LeapMotion leap;
 PVector handRight;
 PVector handLeft;
 
+boolean keyTap = false;
+;
+
 void leapmotionInit() {
   handRight = new PVector();
   handLeft = new PVector();  
@@ -45,7 +48,7 @@ void leapmotionScan() {
 
       //println(handPosition);
       handRight.x = map(constrain(handPosition.x, -200, 1500), -200, 1500, -89, 89);
-      handRight.y = map(constrain(handPosition.y, -50, 700), -50, 700, -89, 89);
+      handRight.y = map(constrain(handPosition.y, -50, 700), -50, 700, -179, 179);
       handRight.z = map(constrain(handPosition.z, -50, 80), -50, 80, 2000, -2000);
       //println(handRight);
       //println(handPosition);
@@ -54,8 +57,6 @@ void leapmotionScan() {
       // println(handPosition);
       handLeft = handPosition.copy();
     }
-
-
 
     // ==================================================
     // 4. Finger
@@ -132,14 +133,27 @@ void leapOnSwipeGesture(SwipeGesture g, int state) {
   float   speed            = g.getSpeed();
   long    duration         = g.getDuration();
   float   durationSeconds  = g.getDurationInSeconds();
-
   switch(state) {
   case 1: // Start
     break;
   case 2: // Update
     break;
   case 3: // Stop
-    println("SwipeGesture: " + id);
+    println("SwipeGesture: " + id);  
+
+    if (direction.x > 0)
+      spin += 90;
+    else 
+    spin -= 90;
+
+    if (midi.control[1][1] > 64) {
+      camAdjustXX=random(-300, 300);
+      camAdjustYY=random(-100, 100);
+    } else {
+      camAdjustXX=0;
+      camAdjustYY=0;
+    }
+    photoSpin = true;
     break;
   }
 }
@@ -204,4 +218,14 @@ void leapOnKeyTapGesture(KeyTapGesture g) {
   float   durationSeconds  = g.getDurationInSeconds();
 
   println("KeyTapGesture: " + id);
+  keyTap = true;
+  photoSpin = false;
+
+  if (midi.control[1][1] > 64) {
+    camAdjustXX=random(-300, 300);
+    camAdjustYY=random(-100, 100);
+  } else {
+    camAdjustXX=0;
+    camAdjustYY=0;
+  }
 }

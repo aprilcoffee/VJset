@@ -6,6 +6,9 @@ void midiContollerInit() {
 
   midi = new Midi();
 }
+
+//Black 12 R 15 G 60 Y 63
+
 class Midi {
   int[] layerTint = new int[8];
   int[][] control = new int[8][3];
@@ -33,7 +36,7 @@ void controllerChange(int channel, int number, int value) {
   // Receive a controllerChange
 
   if (channel <= 7) {
-    midi.control[channel-1][number-1] = value;
+    midi.control[channel][number-1] = value;
   }
 
 
@@ -41,6 +44,10 @@ void controllerChange(int channel, int number, int value) {
     midi.layerTint[number-1] = value*2;
     if (midi.layerTint[number-1] > 40)midi.layerToggle[number-1]=true;
     else midi.layerToggle[number-1]=false;
+  }
+
+  if (channel==13 && number ==11) {
+    soundReset = true;
   }
 
   println();

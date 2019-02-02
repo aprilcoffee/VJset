@@ -28,6 +28,8 @@ void soundAdjestReset() {
   freqHigh_Max = 0;
   totalAmp_Min = 6000;
   totalAmp_Max = 0;
+  
+  println(f_total);
 }
 
 void soundCheck() {
@@ -102,7 +104,6 @@ void soundCheck() {
     else if (i > 8 && i <= 20)freqMid += fftLin.getAvg(i);
     else if (i > 20)freqHigh += fftLin.getAvg(i);
 
-
     freqTotal += fftLin.getAvg(i);
   }
   /*
@@ -132,13 +133,35 @@ void soundCheck() {
   f_High = norm(freqHigh, freqHigh_Min, freqHigh_Max);
   f_total = norm(freqTotal, totalAmp_Min, totalAmp_Max);
 
-  int showVol = int(map(f_total, 0, 1, 0, 9));
+  int showVol = constrain(int(map(f_total, 0, 1, -1, 5)), 0, 5);
+  int showVol_mid = constrain(int(map(f_Mid, 0, 1, -1, 5)), 0, 5);
+  int showVol_high = constrain(int(map(f_High, 0, 1, -1, 5)), 0, 5);
 
-  int channel = 12;
-  for (int i=0; i<showVol; i++) {
-
+  int channel = 11;
+  for (int i=0; i<showVol_mid; i++) {
     int number = 11+i;
-    int value = 13;
+    int value = 60;
+    myBus.sendControllerChange(channel, number, value); // Send a controllerChange
+  }
+  for (int i =showVol_mid; i<4; i++) {
+    int number = 11+i;
+    int value = 0;
+    myBus.sendControllerChange(channel, number, value); // Send a controllerChange
+  } 
+  for (int i=0; i<showVol_high; i++) {
+    int number = 15+i;
+    int value = 63;
+    myBus.sendControllerChange(channel, number, value); // Send a controllerChange
+  }
+  for (int i =showVol_high; i<4; i++) {
+    int number = 15+i;
+    int value = 0;
+    myBus.sendControllerChange(channel, number, value); // Send a controllerChange
+  }
+  channel = 12;
+  for (int i=0; i<showVol; i++) {
+    int number = 11+i;
+    int value = 15;
     myBus.sendControllerChange(channel, number, value); // Send a controllerChange
   }
   for (int i =showVol; i<8; i++) {

@@ -26,7 +26,7 @@ float n2 = 400;
 float n3 = 100;
 int geoCount=0;
 
-boolean showAllgeo = true;
+boolean showAllgeo = false;
 boolean textureOn = false;
 boolean crashSide = false;
 boolean showHalf = false;
@@ -53,10 +53,17 @@ void beatCheck() {
   showHalf = isBeat;
   showHalfTrigger = isBeat;
 
-  crashSide = isKick;
-  
   changeTexture = isHat;
   textureOn = isSnare;
+
+  if (midi.control[7][1] > 64) {
+    showAllgeo = true;  
+    crashSide = isKick;
+  } else {
+    showAllgeo = false;
+    showHalf = isKick;
+    showHalfTrigger = isKick;
+  }
 }
 PGraphics drawPlanet(PGraphics P) {
 
@@ -68,18 +75,19 @@ PGraphics drawPlanet(PGraphics P) {
 
   pushMatrix();
   pushStyle();
-
   P.beginDraw();
   P.background(0, 0);
-  P.endDraw();
+  P.blendMode(BLEND);
+  P.hint(ENABLE_DEPTH_TEST);
   phase3moveA=89*sin(radians(frameCount*2.173));
   phase3moveT=89*sin(radians(frameCount*0.489));
+  phase2Counter++;
   float camR = 1500;
   float camX = camR * sin(radians(phase3moveA)*cos(radians(phase3moveT)));
   float camY = camR * sin(radians(phase3moveT));
   float camZ = camR * cos(radians(phase3moveA)*cos(radians(phase3moveT)));
-  camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
-
+  P.camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
+  if (isBeat)P.translate(random(-60, 60), random(-60, 60));
   orbitTextureDraw(orbitTexture);
   //drawTerrainInGraphics(orbitTexture);
   resetSphereLocation();
@@ -107,7 +115,6 @@ PGraphics drawPlanet(PGraphics P) {
         flyAway=false;
       }
     }
-    noStroke();
     if (crashSide==true) {
       //resetSphereLocation();
       int newLonMin = (int)random(total);    
@@ -125,7 +132,7 @@ PGraphics drawPlanet(PGraphics P) {
         newLatMin = newLatMax;
         newLatMax = temp;
       }
-      float temp_newR = geometryR + random(3500, 6000);
+      float temp_newR = geometryR + random(8000 * norm(midi.control[7][1], 64, 128));
       for (int i=newLatMin; i<newLatMax; i++) {
         float lat = map(i, 0, total, -HALF_PI, HALF_PI);
         float r2 = superShape(lat, m, n1, n2, n3);
@@ -137,7 +144,6 @@ PGraphics drawPlanet(PGraphics P) {
           geometry[i][j].setNewLocation(r1, r2, i, j, temp_newR+random(-20, 20));
         }
       }
-      println("Hello");
       crashSide = false;
     }
     //noStroke();
@@ -151,11 +157,12 @@ PGraphics drawPlanet(PGraphics P) {
       if (newLonMaxHalf > total)newLonMaxHalf=total-1;
       if (newLonMaxHalf < 0)newLonMaxHalf=0;
 
-      if (phase2Counter*0.001 < 3) {
-        shabaMode2 = int(random(phase2Counter*0.001));
-      } else {
-        shabaMode2 = int(random(3));
-      }
+      //if (phase2Counter*0.001 < 3) {
+      //  shabaMode2 = int(random(phase2Counter*0.001));
+      //} else {
+      //  shabaMode2 = int(random(3));
+      //}
+
       if (newLonMinHalf > newLonMaxHalf) {
         int temp = newLonMinHalf;
         newLonMinHalf = newLonMaxHalf;
@@ -168,9 +175,13 @@ PGraphics drawPlanet(PGraphics P) {
         newLatMinHalf = newLatMaxHalf;
         newLatMaxHalf = temp;
       }
+      println(newLatMinHalf, newLatMaxHalf);
       showHalfTrigger=false;
     }
   }
+
+  shabaMode2 = int(map(midi.control[7][0], 0, 127, 0, 3));
+
   if (showAllgeo==true) {
     for (int i=0; i<total; i++) {
       for (int j=0; j<total; j++) {
@@ -181,7 +192,8 @@ PGraphics drawPlanet(PGraphics P) {
           geometry[i+1][j].globeTexture, 
           geometry[i][j+1].globeTexture, 
           geometry[i+1][j+1].globeTexture, 
-          shabaMode2
+          shabaMode2, 
+          P
           );
       }
     }
@@ -195,7 +207,8 @@ PGraphics drawPlanet(PGraphics P) {
           geometry[i+1][j].globeTexture, 
           geometry[i][j+1].globeTexture, 
           geometry[i+1][j+1].globeTexture, 
-          shabaMode2
+          shabaMode2, 
+          P
           );
       }
     }
@@ -231,13 +244,11 @@ PGraphics drawPlanet(PGraphics P) {
    }
    }
    }*/
-  endShape(CLOSE);
-  changSuperShape();
+  //changSuperShape();
   //image(orbitTexture,width/2,height/2,width,height);
-
-
   //iP.endDraw();
 
+  P.endDraw();
   popMatrix();
   popStyle();
   return P;
@@ -358,7 +369,7 @@ class Geometry {
     ii = ei;
     jj = ej;
     globeTar = eglobeTar;
-
+    //globe = eglobeTar;
     globe = new PVector[6];
     globeTexture = new PVector(float(ii)/total, float(jj)/total);
     globeTint = 255;
@@ -390,87 +401,86 @@ class Geometry {
     }
   }
 
-  void show(PVector tempRight, PVector tempDown, PVector tempRightDown, int showMode) {
+  void show(PVector tempRight, PVector tempDown, PVector tempRightDown, int showMode, PGraphics P) {
+    if (showMode == 0) {
+      P.noFill();
+    } else if (showMode == 1) {
+      P.noFill();
+    } else if (showMode == 2) {
+      P.fill(255, 150 * f_total);
+    } else if (showMode == 3) {
+      P.fill(255, 100);
+    }
+    P.pushMatrix();
+    if (showMode == 1 && textureOn!=true) {
+      P.beginShape(POINTS);
+    } else {
+      P.beginShape(TRIANGLE_STRIP);
+    }
 
     if (showMode == 0) {
-      noFill();
+      P.stroke(255, 150);
+      //strokeWeight(0.5);
     } else if (showMode == 1) {
-      noFill();
+      P.stroke(255, 150);
     } else if (showMode == 2) {
-      fill(255, 100);
+      P.noStroke();
+    } else if (showMode == 3) {
+      P.noStroke();
+      P.texture(orbitTexture);
     }
-    pushMatrix();
-
-    if (showMode == 1 && textureOn!=true) {
-      beginShape(POINTS);
-    } else {
-      beginShape(TRIANGLE_STRIP);
-    }
-    if (textureOn==true) {
-      texture(orbitTexture);
-    } else {
-      if (showMode == 0) {
-        stroke(255, 150);
-        //strokeWeight(0.5);
-      } else if (showMode == 1) {
-        stroke(255, 200);
-      } else if (showMode == 2) {
-        noStroke();
-      }
-    }
-    textureMode(NORMAL);
+    P.textureMode(NORMAL);
 
     if (explosion) {
-      translate(center1.x, center1.y, center1.z);
-      rotate(radians(frameCount+ii+jj));
+      P.translate(center1.x, center1.y, center1.z);
+      P.rotate(radians(frameCount+ii+jj));
       float tempX, tempY, tempZ;
 
-      scale(0.3);
-      vertex(globe[0].x-center1.x, globe[0].y-center1.y, globe[0].z-center1.z, globeTexture.y, globeTexture.x);
-      vertex(globe[1].x-center1.x, globe[1].y-center1.y, globe[1].z-center1.z, tempRight.y, tempRight.x);
-      vertex(globe[2].x-center1.x, globe[2].y-center1.y, globe[2].z-center1.z, tempDown.y, tempDown.x);
+      P.scale(0.3);
+      P.vertex(globe[0].x-center1.x, globe[0].y-center1.y, globe[0].z-center1.z, globeTexture.y, globeTexture.x);
+      P.vertex(globe[1].x-center1.x, globe[1].y-center1.y, globe[1].z-center1.z, tempRight.y, tempRight.x);
+      P.vertex(globe[2].x-center1.x, globe[2].y-center1.y, globe[2].z-center1.z, tempDown.y, tempDown.x);
     } else {
-      vertex(globe[0].x, globe[0].y, globe[0].z, globeTexture.y, globeTexture.x);
-      vertex(globe[1].x, globe[1].y, globe[1].z, tempRight.y, tempRight.x);
-      vertex(globe[2].x, globe[2].y, globe[2].z, tempDown.y, tempDown.x);
+      P.vertex(globe[0].x, globe[0].y, globe[0].z, globeTexture.y, globeTexture.x);
+      P.vertex(globe[1].x, globe[1].y, globe[1].z, tempRight.y, tempRight.x);
+      P.vertex(globe[2].x, globe[2].y, globe[2].z, tempDown.y, tempDown.x);
     }
-    endShape(CLOSE);
+    P.endShape(CLOSE);
 
     if (showMode == 1&&textureOn!=true) {
-      beginShape(POINTS);
+      P.beginShape(POINTS);
     } else {
-      beginShape(TRIANGLE_STRIP);
+      P.beginShape(TRIANGLE_STRIP);
     }
-    if (textureOn==true) {
-      texture(orbitTexture);
-    } else {
-      if (showMode == 0) {
-        stroke(255, 150);
-        //strokeWeight(0.5);
-      } else if (showMode == 1) {
-        stroke(255, 200);
-      } else if (showMode == 2) {
-        noStroke();
-      }
+    if (showMode == 0) {
+      P.stroke(255, 150);
+      //strokeWeight(0.5);
+    } else if (showMode == 1) {
+      P.stroke(255, 200);
+    } else if (showMode == 2) {
+      P.noStroke();
+    } else if (showMode == 3) {
+      P.noStroke();
+      P.texture(orbitTexture);
     }
     if (explosion) {
-      translate(center2.x, center2.y, center2.z);
-      rotate(radians(frameCount+ii+jj));
+      P.translate(center2.x, center2.y, center2.z);
+      P.rotate(radians(frameCount+ii+jj));
       float tempX, tempY, tempZ;
 
       //tempX= 
-      scale(0.3);
-      vertex(globe[3].x-center2.x, globe[3].y-center2.y, globe[3].z-center2.z, globeTexture.y, globeTexture.x);
-      vertex(globe[4].x-center2.x, globe[4].y-center2.y, globe[4].z-center2.z, tempRight.y, tempRight.x);
-      vertex(globe[5].x-center2.x, globe[5].y-center2.y, globe[5].z-center2.z, tempDown.y, tempDown.x);
+      P.scale(0.3);
+      P.vertex(globe[3].x-center2.x, globe[3].y-center2.y, globe[3].z-center2.z, globeTexture.y, globeTexture.x);
+      P.vertex(globe[4].x-center2.x, globe[4].y-center2.y, globe[4].z-center2.z, tempRight.y, tempRight.x);
+      P.vertex(globe[5].x-center2.x, globe[5].y-center2.y, globe[5].z-center2.z, tempDown.y, tempDown.x);
     } else {
-      vertex(globe[3].x, globe[3].y, globe[3].z, globeTexture.y, globeTexture.x);
-      vertex(globe[4].x, globe[4].y, globe[4].z, tempRight.y, tempRight.x);
-      vertex(globe[5].x, globe[5].y, globe[5].z, tempDown.y, tempDown.x);
+      P.vertex(globe[3].x, globe[3].y, globe[3].z, globeTexture.y, globeTexture.x);
+      P.vertex(globe[4].x, globe[4].y, globe[4].z, tempRight.y, tempRight.x);
+      P.vertex(globe[5].x, globe[5].y, globe[5].z, tempDown.y, tempDown.x);
     }
-    endShape(CLOSE);
+    P.endShape(CLOSE);
 
-    popMatrix();
+    P.popMatrix();
   }
   void exploded(float r1, float r2, float i, float j) {
     r = explosionR1;

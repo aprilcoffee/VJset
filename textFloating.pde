@@ -6,10 +6,10 @@ PGraphics drawFloatingText(PGraphics P) {
 
   P.background(0, 0);
   camX = camDis*sin(radians(camA))*cos(radians(camT));
-  camY = camDis*sin(radians(camT));
-  camZ = camDis*cos(radians(camA))*cos(radians(camT));
+  camY = camDis*sin(radians(camA))*sin(radians(camT));
+  camZ = camDis*cos(radians(camA));
   P.camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
- 
+
   boolean isBeat = false;
 
   if (beat.isOnset()) {
@@ -40,12 +40,14 @@ class Text {
     ppos = pos.copy();
     text = char(int(random(0, 128)));
     v = new PVector(0, random(-5, -10), 0);
+    textsize = random(10, 30);
   }
   Text(PVector _pos) {
     pos = _pos.copy();
     ppos = pos.copy();
     text = char(int(random(0, 128)));
     v = new PVector(0, random(-5, -10), 0);
+    textsize = random(10, 30);
   }
   void update(boolean _isBeat, PGraphics P) {
     if (_isBeat) {
@@ -61,6 +63,7 @@ class Text {
   void show(PGraphics P) {
     P.pushMatrix();
     P.fill(255);
+    P.textSize(textsize);
     P.translate(pos.x, pos.y, pos.z);
     P.text(text, 0, 0);
     P.popMatrix();

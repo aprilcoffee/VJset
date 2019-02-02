@@ -6,10 +6,16 @@ int cols, rows;
 int scl = 20;
 int w = 1000;
 int h = 2000;
-
 boolean TerrainRandom = false;
 boolean terrainRandomTrigger = false;
 int TerrainMode = 2;
+
+float camAdjustX = 0;
+float camAdjustY = 0;
+float camAdjustXX = 0;
+float camAdjustYY = 0;
+
+
 void terrainInit() {
   cols = w/scl;
   rows = h/scl;
@@ -26,11 +32,21 @@ void terrainInit() {
 }
 PGraphics drawTerrain(PGraphics P) {
 
+  TerrainMode = int(map(midi.control[1][0], 0, 127, 0, 4));
+
+
   P.beginDraw();
-  P.background(0,0);
+  P.background(0, 0);
   P.colorMode(HSB);
   P.hint(DISABLE_DEPTH_TEST);
-  P.camera(0, -150, 2000, 0, 0, 0, 0, 1, 0);
+
+  camAdjustX += (camAdjustXX - camAdjustX *0.15);
+  camAdjustY += (camAdjustYY - camAdjustY *0.15);
+
+  P.camera(0+camAdjustX, -150+camAdjustY, 1600, 0, 0, 0, 0, 1, 0);
+
+
+
 
   for (int y = rows-1; y >= 1; y--) {
     for (int x = 0; x < cols; x++) {  
@@ -40,13 +56,14 @@ PGraphics drawTerrain(PGraphics P) {
     }
   }
   audioAmp[0] = 0;
+  float adjustAmp = norm(midi.control[1][2], 0, 127);
   for (int x = 0; x < cols; x++) {
     if (x%2==0) {
-      terrainLeft[x][0] = fftLin.getBand(x*2)/2*40+in.left.get(x*2)*20;
-      terrainRight[x][0]= fftLin.getBand(x*2)/2*40+in.right.get(x*2)*20;
+      terrainLeft[x][0] = fftLin.getBand(x*2)*40*adjustAmp+in.left.get(x*2)*20;
+      terrainRight[x][0]= fftLin.getBand(x*2)*40*adjustAmp+in.right.get(x*2)*20;
     } else {
-      terrainLeft[x][0] = -fftLin.getBand(x*2)/2*40+in.left.get(x*2)*20;
-      terrainRight[x][0]= -fftLin.getBand(x*2)/2*40+in.right.get(x*2)*20;
+      terrainLeft[x][0] = -fftLin.getBand(x*2)*40*adjustAmp+in.left.get(x*2)*20;
+      terrainRight[x][0]= -fftLin.getBand(x*2)*40*adjustAmp+in.right.get(x*2)*20;
     }
     audioAmp[0]+=abs(fftLin.getBand(x*5))*15;//renew Amount of Sound
   }
@@ -87,7 +104,7 @@ PGraphics drawTerrain(PGraphics P) {
         for (int x = 0; x < cols; x++) {
           //noStroke();
           //fill(255,0,0);
-          P.stroke(map(audioAmp[y], 0, 50000, 0, 255), map(audioAmp[y], 0, 100000, 0, 255), audioAmp[y], map(y, rows, 0, 0, 150));
+          P.stroke(map(audioAmp[y], 0, 30000, 0, 255), map(audioAmp[y], 0, 100000, 0, 255), audioAmp[y], map(y, rows, 0, 0, 150));
           //fill(map(audioAmp[y], 0, 5000, 0, 255), audioAmp[y], audioAmp[y], map(y, rows, 0, 10, 80));
           //fill(255);
           P.point(x*scl, y*scl, terrainLeft[x][y]);
@@ -246,33 +263,15 @@ PGraphics drawTerrain(PGraphics P) {
     }
   }
   P.popMatrix();
+
+
+
+
+
+
+
+
   P.endDraw();
   return P;
 
-  //for (int s=0; s<tunnel.size(); s++) {
-  //  tunnel.get(s).update();
-  //  tunnel.get(s).show();
-  //  if (tunnel.get(s).z > 1000)tunnel.remove(s);
-  //}
-}
-
-class Tunnel {
-  float x, y, z;
-  float len;
-  Tunnel() {
-    x = 0;
-    y = 0;
-    z = -2000;
-    len = 500;
-  }
-  void update() {
-    z+=30;
-  }
-  void show() {
-    noFill();
-    strokeWeight(5);
-    stroke(255);
-    translate(0, 0, z);
-    rect(0, 0, 500, 1000);
-  }
 }

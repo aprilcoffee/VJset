@@ -7,8 +7,9 @@ void soundDetectionInit() {
 
   analyisBeat = new BeatDetect( in.bufferSize(), in.sampleRate() );
   analyisBeat.setSensitivity(100);
+
   beat = new BeatDetect();
-  beat.setSensitivity(400);  
+  beat.setSensitivity(10);  
 
   fftLin = new FFT( in.bufferSize(), in.sampleRate() );
   fftLin.logAverages( 22, 3 );
@@ -21,7 +22,7 @@ void detectBeat() {
   isBeat = false;
   isSnare = false;
   isHat = false;
-  
+
   // draw a green rectangle for every detect band
   // that had an onset this frame
   float rectW = width / analyisBeat.detectSize();
@@ -79,26 +80,36 @@ void detectBeat() {
      
      */
   }
+
   if ( analyisBeat.isKick() ) {
-    println("kick");
     isKick = true;
   }
   if ( analyisBeat.isSnare() ) {
-    println("Snare");
     isSnare = true;
   }
   if ( analyisBeat.isHat() ) {
-    println("Hat");
     isHat = true;
   }
   if (beat.isOnset()) {
-    println("Beat");
     isBeat = true;
   }
 
   kickSize = constrain(kickSize * 0.95, 16, 32);
   snareSize = constrain(snareSize * 0.95, 16, 32);
   hatSize = constrain(hatSize * 0.95, 16, 32);
+  //Black 12 R 15 G 60 Y 63
+  if (isBeat) {
+    myBus.sendControllerChange(13, 15, 40);
+  } else   myBus.sendControllerChange(13, 15, 0);
+  if (isKick) {
+    myBus.sendControllerChange(13, 18, 47);
+  } else   myBus.sendControllerChange(13, 18, 0);
+  if (isSnare) {
+    myBus.sendControllerChange(13, 17, 60);
+  } else   myBus.sendControllerChange(13, 17, 0);
+  if (isHat) {
+    myBus.sendControllerChange(13, 16, 63);
+  } else  myBus.sendControllerChange(13, 16, 0);
 }
 class BeatListener implements AudioListener
 {

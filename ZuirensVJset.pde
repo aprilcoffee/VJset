@@ -9,6 +9,8 @@ BeatListener bl;
 FFT fftLin;
 Midi midi;
 
+boolean soundReset;
+
 boolean isBeat;
 boolean isKick;
 boolean isSnare;
@@ -23,7 +25,6 @@ PImage spaceBG;
 PImage[] spaceImg;
 PImage[] spaceImgBW;
 int photoLength =25;
-//ArrayList<Tunnel> tunnel;
 
 PGraphics PG_starField;
 PGraphics PG_terrain;
@@ -45,13 +46,12 @@ PGraphics PG_planet;
  if (beat.isOnset()) {
  }
  
- 
  */
-
 void setup()
 {
-  //size(1280, 800, P3D);
-  fullScreen(P3D,2);
+  size(1920, 1080, P3D);
+  //fullScreen(P3D,1);
+
   blendMode(ADD);
   hint(DISABLE_DEPTH_TEST);
   colorMode(HSB);
@@ -66,17 +66,19 @@ void setup()
     spaceImg[s] = loadImage("space_imgs/"+(s+1)+".jpeg");
     spaceImgBW[s] = loadImage("space_imgsBW/"+(s+1)+".jpeg");
   } 
+  tunnel = new ArrayList<Tunnel>();
+
 
 
   //controlinterface = createGraphics(800, 600, P3D);
-  PG_starField = createGraphics(800, 450, P3D);
-  PG_terrain = createGraphics(1280, 800, P3D);
-  PG_atanWave = createGraphics(1280, 800, P3D);
-  PG_soundwaveSphere = createGraphics(1280, 800, P3D);
-  PG_spaceShip = createGraphics(800, 600, P3D);
+  PG_starField = createGraphics(1920, 1080, P3D);
+  PG_terrain = createGraphics(1920, 1080, P3D);
+  PG_atanWave = createGraphics(1920, 1080, P3D);
+  PG_soundwaveSphere = createGraphics(1920, 1080, P3D);
+  PG_spaceShip = createGraphics(1920, 1080, P3D);
   PG_floatingText = createGraphics(1280, 800, P3D);
-  PG_particleFollow = createGraphics(1280, 800, P3D);
-  PG_planet = createGraphics(1280, 800, P3D);
+  PG_particleFollow = createGraphics(1920, 1080, P3D);
+  PG_planet = createGraphics(1920,1080, P3D);
   // make a new beat listener, so that we won't miss any buffers for the analysis
   //bl = new BeatListener(analyisBeat, in);  
   font_trench = createFont("font/trench100free.ttf", 32);   
@@ -90,20 +92,23 @@ void setup()
   terrainInit();
   particlesInit(PG_particleFollow);
   planetInit(PG_planet);
+  starInit();
 
   frameRate(30);
-  //tunnel = new ArrayList<Tunnel>()
   background(0);
 }
 
 void draw()
 {
+
+
   background(0);
   beat.detect(in.mix);
   analyisBeat.detect(in.mix);
   leapmotionScan();
   soundCheck();
   detectBeat();
+
   if (frameCount%6000==0)soundAdjestReset();
 
   camA = handRight.x;
@@ -165,7 +170,24 @@ void draw()
   }
   if (midi.layerToggle[7]) {
     tint(midi.layerTint[7]);
-    blendMode(ADD);
+    blendMode(BLEND);
     image(drawPlanet(PG_planet), 0, 0, width, height);
+    if (midi.control[7][2] > 30) {
+      translate(random(-f_total*10, f_total*10), random(-f_total*10, f_total*10));
+      tint(midi.layerTint[7] * norm(midi.control[7][2], 0, 127));
+      
+      pushMatrix();
+      image(PG_planet, -width/2+200, -height/2, width, height);
+      popMatrix();
+      
+      image(PG_planet, width/2, height/2-200, width, height);
+    }
+  }
+
+  keyTap = false;
+
+  if (soundReset==true) {
+    soundAdjestReset();
+    soundReset=false;
   }
 }
