@@ -54,7 +54,8 @@ void beatCheck() {
   showHalfTrigger = isBeat;
 
   changeTexture = isHat;
-  textureOn = isSnare;
+  
+  textureOn = isHat;
 
   if (midi.control[7][1] > 64) {
     showAllgeo = true;  

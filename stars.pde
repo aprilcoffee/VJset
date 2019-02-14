@@ -51,8 +51,10 @@ PGraphics drawStarField(PGraphics P) {
   } else if (midi.control[0][2] > 70&&midi.control[0][2] < 100) {
     P.image(imageGlitch(spaceBG), P.width/2, P.height/2, P.width, P.height);
     spaceBG = loadImage("spaceBG.png");
-  } else if (midi.control[0][2]>=100) { 
+  } else if (midi.control[0][2]>=100 && midi.control[0][2]<120) { 
     P.image(spaceImgBW[imageFlagtemp], P.width/2, P.height/2, P.width, P.height);
+  } else if(midi.control[0][2]>=120){
+    P.image(movie, P.width/2, P.height/2, P.width, P.height) ;
   }
 
   if (isHat) {

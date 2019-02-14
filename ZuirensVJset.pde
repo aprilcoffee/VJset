@@ -8,6 +8,10 @@ BeatDetect beat;
 BeatListener bl;
 FFT fftLin;
 Midi midi;
+import processing.video.*;
+
+Movie movie;
+
 
 boolean soundReset;
 
@@ -93,11 +97,13 @@ void setup()
   particlesInit(PG_particleFollow);
   planetInit(PG_planet);
   starInit();
+  movie = new Movie(this, "loop.mp4");
+  movie.loop();
 
   frameRate(30);
   background(0);
-  
-  
+
+
   runtime = java.lang.Runtime.getRuntime();
 }
 
@@ -112,7 +118,7 @@ void draw()
   soundCheck();
   detectBeat();
 
- // if (frameCount%6000==0)soundAdjestReset();
+  // if (frameCount%6000==0)soundAdjestReset();
 
   camA = handRight.x;
   camT = handRight.y;
@@ -181,14 +187,14 @@ void draw()
 
       pushMatrix();
       if (midi.control[7][2]>64) {
-        translate(100 * abs(sin(radians(frameCount + 30*f_High))), 0);
+        translate(600 * abs(sin(radians(frameCount + 30*f_High))), 0);
         image(PG_planet, -width/2+200, -height/2, width, height);
       }
       popMatrix();
 
       pushMatrix();
       if (midi.control[7][2]>64) {
-        translate(-150 * abs(sin(radians(frameCount + 27*f_Mid))), 0);
+        translate(-600 * abs(sin(radians(frameCount + 27*f_Mid))), 0);
         image(PG_planet, width/2, height/2-200, width, height);
       }
       popMatrix();
@@ -201,7 +207,10 @@ void draw()
     soundAdjestReset();
     soundReset=false;
   }
-  
-  
+
+
   if (frameCount % 3600 ==0)runtime.gc();
+}
+void movieEvent(Movie m) {
+  m.read();
 }
